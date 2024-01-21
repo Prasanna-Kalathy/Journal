@@ -4,16 +4,28 @@ const form = document.forms['submit-to-google-sheet'];
 const responseMessage = document.getElementById('responseMessage');
 
 //Form Submission
-form.addEventListener('submit', e => {
+document.getElementById("Form_Submit").addEventListener("submit", function (e) {
     e.preventDefault();
-    // Disable the submit button during the request
+
+    // Get the selected date from the date picker
+    var selectedDate = document.getElementById("datepicker").value;
+
+    // Append the selected date to the form data
+    var formData = new FormData(form);
+    formData.append("selectedDate", selectedDate);
+
+    // Disable the submit button while the request is in progress
     form.querySelector('button').disabled = true;
 
-    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+    // Make a POST request to your Google Apps Script
+    fetch(scriptURL, {
+        method: 'POST',
+        body: formData
+    })
         .then(response => response.json())
         .then(data => {
             // Update the HTML with the response data
-            responseMessage.innerHTML = `Test Result: ${data[0]}, Row: ${data.row}, Column: ${data.column}`;
+            responseMessage.innerHTML = `Test Result: ${data.result}, Row: ${data.row}, Date: ${data.Date}`;
             // Clear the form after successful submission
             form.reset();
         })
@@ -27,6 +39,7 @@ form.addEventListener('submit', e => {
             form.querySelector('button').disabled = false;
         });
 });
+
 
 // Function to populate the time slots dropdown
 function populateTimeSlots() {
@@ -47,7 +60,7 @@ function populateTimeSlots() {
         option.setAttribute('name', option.value);
         option.text = option.value + ' = ' + startTime + ' - ' + endTime;
 
-        console.log(option.text)
+        // console.log(option.text)
 
         // Set default selected option based on the current time
         let CurrentSlot = getTimeSlot();
