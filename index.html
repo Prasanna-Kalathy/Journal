@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sample Form</title>
+  </head>
+  <body>
+    <form name="submit-to-google-sheet">
+      <!-- Date Picker with today's date as default -->
+      <label for="datepicker">Select a date:</label>
+      <input type="date" id="datepicker" name="datepicker" required /><br />
+
+      <!-- Text Box -->
+      <label for="textbox">Enter some text:</label>
+      <input type="text" id="textbox" name="JANUARY" required /><br />
+
+      <!-- Dropdown with 5 options -->
+      <label for="dropdown1">Select an option:</label>
+      <select id="dropdown1" name="dropdown1" required>
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+        <option value="option4">Option 4</option>
+        <option value="option5">Option 5</option></select
+      ><br />
+
+      <!-- New dropdown for time slots -->
+      <label for="timeslot">Select a time slot:</label>
+      <select id="timeslot" name="timeslot" required>
+        <!-- JavaScript will dynamically generate options here --></select
+      ><br />
+
+      <!-- Dropdown with 3 options -->
+      <label for="dropdown2">Select another option:</label>
+      <select id="dropdown2" name="dropdown2" required>
+        <option value="optionA">Option A</option>
+        <option value="optionB">Option B</option>
+        <option value="optionC">Option C</option></select
+      ><br />
+
+      <!-- Submit button -->
+      <button type="submit">Send</button>
+      <script>
+        // Set today's date as the default value for the date picker
+        document.getElementById("datepicker").valueAsDate = new Date();
+      </script>
+    </form>
+
+    <!-- Add a container for displaying the response -->
+    <div id="responseMessage"></div>
+
+    <!-- Include the separate JavaScript file -->
+    <script src="script.js"></script>
+  </body>
+</html>
