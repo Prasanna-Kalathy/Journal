@@ -23,7 +23,7 @@ function doPost(e) {
 
     // Get the spreadsheet by its ID
     var ss = SpreadsheetApp.openById('1Wv-XAOssMUmcF5yvPxQVAbHoiof0UI-mzifdBiOdwlc');
-    var sheet = ss.getSheetByName('JAN'); // Change to your sheet name
+    var sheet = ss.getSheetByName('Entries'); // Change to your sheet name
 
     // Find the column based on the dropdown number in range G2:AR2
     var headers = sheet.getRange("G2:AR2").getValues()[0]; // Assuming headers are in the second row
