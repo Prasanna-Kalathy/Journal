@@ -4,6 +4,21 @@ const RoutineResponse = document.getElementById('RoutineResponse');
 const timeslotDropdown = document.getElementById('timeslot'); // Cache the timeslot dropdown element
 const responseMessage = document.getElementById('responseMessage');
 
+// Function to show the popup message
+function showPopup(message, isSuccess) {
+  const popup = document.createElement('div');
+  popup.className = 'popup ' + (isSuccess ? 'popup-success' : 'popup-error');
+  popup.textContent = message;
+
+  document.body.appendChild(popup);
+  popup.style.display = 'block';
+
+  setTimeout(() => {
+    popup.style.display = 'none';
+    document.body.removeChild(popup);
+  }, 3000);
+}
+
 // Form Submission
 document.getElementById("Form_Submit").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -26,15 +41,15 @@ document.getElementById("Form_Submit").addEventListener("submit", function (e) {
   })
   .then(response => response.json())
   .then(data => {
-      // Update the HTML with the response data
-      responseMessage.innerHTML = `Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}, Date: ${data.Date}`;
+      // Show success popup message
+      showPopup(`Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}, Date: ${data.Date}`, true);
       // Clear the form after successful submission
       form.reset();
   })
   .catch(error => {
       console.error('Error!', error.result);
-      // Update the HTML with the error message
-      responseMessage.innerHTML = `Error: ${error.result}`;
+      // Show error popup message
+      showPopup(`Error: ${error.result}`, false);
   })
   .finally(() => {
       // Re-enable the submit button after the request is complete
@@ -89,7 +104,6 @@ populateTimeSlots();
 
 // Function to get the current time slot based on current time
 function getTimeSlot() {
-  // Get the current time
   let currentTime = new Date();
   let currentHours = currentTime.getHours();
   let currentMinutes = currentTime.getMinutes();
