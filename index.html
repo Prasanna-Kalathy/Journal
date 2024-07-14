@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sample Form</title>
+  <title>Alpha Journal</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,15 +13,21 @@
 
     <form name="submit-to-google-sheet" id="Form_Submit" method="POST">
       <!-- Date Picker with today's date as default -->
-      <label for="datepicker">Select a date:</label>
+      <label for="datepicker">When?</label>
       <input type="date" id="datepicker" name="datepicker" required /><br />
 
       <!-- Text Box -->
-      <label for="textbox">Enter some text:</label>
-      <input type="text" id="textbox" name="text" required /><br />
+      <label for="textbox">What have you done?</label>
+      <input type="text" id="textbox" name="text" placeholder="Enter some text" required /><br />
 
+      <!-- New dropdown for time slots -->
+      <label for="timeslot">Between</label>
+      <select id="timeslot" name="timeslot" required>
+        <!-- JavaScript will dynamically generate options here -->
+      </select>
+      
       <!-- Dropdown with 5 options -->
-      <label for="Category">Select an option:</label>
+      <label for="Category">It's kind of</label>
       <select id="Category" name="Category" required>
         <option value="Routine">Routine</option>
         <option value="Career">Career</option>
@@ -29,14 +35,10 @@
         <option value="Chat">Chat</option>
         <option value="Sleep">Sleep</option>
       </select><br />
-
-      <!-- New dropdown for time slots -->
-      <label for="timeslot">Select a time slot:</label>
-      <select id="timeslot" name="timeslot" required>
-        <!-- JavaScript will dynamically generate options here -->
-      </select>
-      <label id="RoutineResponse"></label><br />
-
+      
+      
+      <div id="RoutineResponse"> <span class="spinner"></span>
+      </div>
       <!-- Radio Buttons and Labels Centered -->
       <div class="radio-container">
         <label for="Screen">Screen:</label>

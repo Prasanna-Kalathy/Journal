@@ -3,6 +3,7 @@ const form = document.forms['submit-to-google-sheet'];
 const RoutineResponse = document.getElementById('RoutineResponse');
 const timeslotDropdown = document.getElementById('timeslot'); // Cache the timeslot dropdown element
 const responseMessage = document.getElementById('responseMessage');
+const spinner = document.querySelector('.spinner');
 
 // Function to show the popup message
 function showPopup(message, isSuccess) {
@@ -36,25 +37,25 @@ document.getElementById("Form_Submit").addEventListener("submit", function (e) {
 
   // Make a POST request to your Google Apps Script
   fetch(scriptURL, {
-      method: 'POST',
-      body: formData
+    method: 'POST',
+    body: formData
   })
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       // Show success popup message
       showPopup(`Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}, Date: ${data.Date}`, true);
       // Clear the form after successful submission
       form.reset();
-  })
-  .catch(error => {
+    })
+    .catch(error => {
       console.error('Error!', error.result);
       // Show error popup message
       showPopup(`Error: ${error.result}`, false);
-  })
-  .finally(() => {
+    })
+    .finally(() => {
       // Re-enable the submit button after the request is complete
       form.querySelector('button').disabled = false;
-  });
+    });
 });
 
 function formatDate(dateString) {
@@ -108,8 +109,33 @@ function getTimeSlot() {
   let currentHours = currentTime.getHours();
   let currentMinutes = currentTime.getMinutes();
   let currentSlot = 37 - Math.floor((currentHours - 5) * 2 + currentMinutes / 30);
-
+  
   return currentSlot;
+}
+
+// Function to fetch data from Google Sheets
+async function fetchSheetData(number) {
+  const scriptUrl = scriptURL + '?number=' + encodeURIComponent(number);
+  try {
+    // Show the spinner
+    spinner.style.display = 'inline-block';
+    const response = await fetch(scriptUrl);
+    const result = await response.json();
+
+    if (result.found) {
+      RoutineResponse.innerHTML = `You Should be doing : <br/><span class="highlight">${result.value}</span>`;
+      document.getElementById('textbox').value = result.value;
+    } else {
+      RoutineResponse.innerHTML = 'Number not found';
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    RoutineResponse.innerHTML = `Error: ${error.message}`;
+  }
+  finally {
+    // Hide the spinner
+    spinner.style.display = 'none';
+  }
 }
 
 // Function to fetch data from Google Sheets and display immediately on page load
@@ -121,24 +147,9 @@ window.addEventListener('load', async function () {
 // Function to fetch data from Google Sheets and display on selection change
 timeslotDropdown.addEventListener('change', async function () {
   const timeslot = timeslotDropdown.value;
+  // Show the spinner
+  RoutineResponse.innerHTML = ''; // Clear previous response text
+  spinner.style.display = 'inline-block';
   await fetchSheetData(timeslot);
 });
 
-// Function to fetch data from Google Sheets
-async function fetchSheetData(number) {
-  const scriptUrl = scriptURL + '?number=' + encodeURIComponent(number);
-
-  try {
-    const response = await fetch(scriptUrl);
-    const result = await response.json();
-
-    if (result.found) {
-      RoutineResponse.innerHTML = `You Should be doing: ${result.value}`;
-    } else {
-      RoutineResponse.innerHTML = 'Number not found';
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    RoutineResponse.innerHTML = `Error: ${error.message}`;
-  }
-}
