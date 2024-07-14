@@ -5,54 +5,59 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sample Form</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <form name="submit-to-google-sheet" id="Form_Submit" method="POST">
-    <!-- Date Picker with today's date as default -->
-    <label for="datepicker">Select a date:</label>
-    <input type="date" id="datepicker" name="datepicker" required /><br />
+  <div id="MainDiv">
 
-    <!-- Text Box -->
-    <label for="textbox">Enter some text:</label>
-    <input type="text" id="textbox" name="text" required /><br />
+    <form name="submit-to-google-sheet" id="Form_Submit" method="POST">
+      <!-- Date Picker with today's date as default -->
+      <label for="datepicker">Select a date:</label>
+      <input type="date" id="datepicker" name="datepicker" required /><br />
 
-    <!-- Dropdown with 5 options -->
-    <label for="Category">Select an option:</label>
-    <select id="Category" name="Category" required>
-      <option value="Routine">Routine</option>
-      <option value="Career">Career</option>
-      <option value="Personal">Personal</option>
-      <option value="Chat">Chat</option>
-      <option value="Sleep">Sleep</option>
-    </select><br />
+      <!-- Text Box -->
+      <label for="textbox">Enter some text:</label>
+      <input type="text" id="textbox" name="text" required /><br />
 
-    <!-- New dropdown for time slots -->
-    <label for="timeslot">Select a time slot:</label>
-    <select id="timeslot" name="timeslot" required>
-      <!-- JavaScript will dynamically generate options here -->
-    </select>
-    <label id="RoutineResponse"></label><br />
+      <!-- Dropdown with 5 options -->
+      <label for="Category">Select an option:</label>
+      <select id="Category" name="Category" required>
+        <option value="Routine">Routine</option>
+        <option value="Career">Career</option>
+        <option value="Personal">Personal</option>
+        <option value="Chat">Chat</option>
+        <option value="Sleep">Sleep</option>
+      </select><br />
 
-    <!-- Dropdown with 3 options -->
-    <label for="Screen">Screen:</label>
-    <input type="radio" name="ScreenTime" id="Screen" value="Screen" />
-    <label for="No Scr">No Scr:</label>
-    <input type="radio" name="ScreenTime" id="No Scr" value="No Scr" /><br />
+      <!-- New dropdown for time slots -->
+      <label for="timeslot">Select a time slot:</label>
+      <select id="timeslot" name="timeslot" required>
+        <!-- JavaScript will dynamically generate options here -->
+      </select>
+      <label id="RoutineResponse"></label><br />
 
-    <!-- Submit button -->
-    <button type="submit">Send</button>
+      <!-- Dropdown with 3 options -->
+      <label for="Screen">Screen:</label>
+      <input type="radio" name="ScreenTime" id="Screen" value="Screen" />
+      <label for="No Scr">No Scr:</label>
+      <input type="radio" name="ScreenTime" id="No Scr" value="No Scr" /><br />
 
-    <script>
-      // Set today's date as the default value for the date picker
-      document.getElementById("datepicker").valueAsDate = new Date();
-    </script>
-  </form>
+      <!-- Submit button -->
+      <button type="submit">Send</button>
+
+      <script>
+        // Set today's date as the default value for the date picker
+        document.getElementById("datepicker").valueAsDate = new Date();
+      </script>
+    </form>
 
     <!-- Add a container for displaying the response -->
-    <div id="responseMessage"></div>
+    <div id="responseMessage" align="center"></div>
+  </div>
 
-    <!-- Include the separate JavaScript file -->
-    <script src="script.js"></script>
-  </body>
+  <!-- Include the separate JavaScript file -->
+  <script src="script.js"></script>
+</body>
+
 </html>
