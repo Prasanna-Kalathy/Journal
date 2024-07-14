@@ -28,6 +28,7 @@ body {
   
   input[type="text"],
   input[type="date"],
+  input[type="radio"],
   select {
     width: calc(100% - 22px);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,11 +38,7 @@ body {
     border-radius: 4px;
     background: #f9f9f9;
   }
-  
-  input[type="radio"] {
-    margin-right: 10px;
-  }
-  
+    
   button {
     display: block;
     width: 100%;
@@ -55,7 +52,8 @@ body {
   }
   
   button:hover {
-    background-color: #4a56d4;
+    background-color: #2ef038;
+    color: #222222;
   }
   
   #RoutineResponse,
@@ -63,6 +61,7 @@ body {
     margin-top: 10px;
     font-weight: bold;
     color: #5c67f2;
+    text-align: center;
   }
   
   /* Popup Message Styles */
@@ -86,5 +85,33 @@ body {
   .popup-error {
     background-color: #dc3545;
   }
+  
+  /* Radio Buttons */
+  .radio-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    margin-bottom: 20px; /* Optional: Add margin bottom for spacing */
+    margin-top: 10px; /* Optional: Add margin top for spacing */
+    margin-left: 75px; /* Optional: Add margin left for spacing */
+    margin-right: 10px; /* Optional: Add margin right for spacing */
+  }
+  
+  input[type="radio"] {
+    margin-right: 100px; /* Adjust margin as needed */
+    margin-left: 10px; /* Adjust margin as needed */
+    margin-bottom: 12px; /* Adjust margin as needed */
+    margin-top: 10px; /* Adjust margin as needed */
+  }
+  
+  label[for="Screen"], label[for="No Scr"] {
+    display: inline-block; /* Ensure labels are inline with radios */
+    justify-content: center; /* Center horizontally */
+    vertical-align: middle; /* Align labels vertically with radios */
+    margin-left: 10px; /* Adjust left margin for spacing */
+    margin-right: 10px; /* Adjust right margin for spacing */
+    
+  }
+  
   
   
