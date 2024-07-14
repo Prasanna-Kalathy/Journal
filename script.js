@@ -1,47 +1,130 @@
-function doGet(e) {
-  const sheet = SpreadsheetApp.openById('1Wv-XAOssMUmcF5yvPxQVAbHoiof0UI-mzifdBiOdwlc').getSheetByName('Routine');
-  const number = e.parameter.number; // Get the number from the request parameter
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyfnLm9Yk6elFloyZMY1DV6fpItB8utK13PnT_zJYUV9zBAFXISPUMnSx_ITh2M_eE/exec';
+const form = document.forms['submit-to-google-sheet'];
+const RoutineResponse = document.getElementById('RoutineResponse');
+const timeslotDropdown = document.getElementById('timeslot'); // Cache the timeslot dropdown element
+const responseMessage = document.getElementById('responseMessage');
 
-  // Find the row with the given number
-  const data = sheet.getRange('A2:D39').getValues();
-  const row = data.find(row => row[0] == number);
+// Form Submission
+document.getElementById("Form_Submit").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-  let result = { found: false };
-  if (row) {
-    result = { found: true, value: row[3]}; // Assuming column D is the 4th column (index 3)
-  }
-  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+  // Get form data
+  var formData = new FormData(form);
+
+  // Format the date before submitting
+  var datepicker = document.getElementById('datepicker').value;
+  var formattedDate = formatDate(datepicker);
+  formData.set('datepicker', formattedDate);
+
+  // Disable the submit button while the request is in progress
+  form.querySelector('button').disabled = true;
+
+  // Make a POST request to your Google Apps Script
+  fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      // Update the HTML with the response data
+      responseMessage.innerHTML = `Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}, Date: ${data.Date}`;
+      // Clear the form after successful submission
+      form.reset();
+  })
+  .catch(error => {
+      console.error('Error!', error.result);
+      // Update the HTML with the error message
+      responseMessage.innerHTML = `Error: ${error.result}`;
+  })
+  .finally(() => {
+      // Re-enable the submit button after the request is complete
+      form.querySelector('button').disabled = false;
+  });
+});
+
+function formatDate(dateString) {
+  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('en-IN', options);
 }
 
-function doPost(e) {
-    var params = e.parameter;
-    var number = params.timeslot;
-    var selectedDate = params.datepicker; // Adjust according to your HTML form field names
-    var text = params.text;
-    var Category = params.Category;
-    var ScreenTime = params.ScreenTime;
+// Function to populate the time slots dropdown
+function populateTimeSlots() {
+  let startTime = formatTime(5, 0);
+  let endTimeHours = 5;
 
-    // Get the spreadsheet by its ID
-    var ss = SpreadsheetApp.openById('1Wv-XAOssMUmcF5yvPxQVAbHoiof0UI-mzifdBiOdwlc');
-    var sheet = ss.getSheetByName('JAN'); // Change to your sheet name
+  for (let i = 37; i >= 0; i--) {
+    // Calculate ending time for the current slot
+    let endTimeMinutes = 30 * (37 - i) + 30;
+    endTimeHours += 0.5;
+    endTimeMinutes %= 60;
+    const endTime = formatTime(Math.floor(endTimeHours), endTimeMinutes);
 
-    // Find the column based on the dropdown number in range G2:AR2
-    var headers = sheet.getRange("G2:AR2").getValues()[0]; // Assuming headers are in the second row
-    var columnIndex = headers.indexOf(number);
+    const option = document.createElement('option');
+    option.value = i < 10 ? '0' + i : i.toString();
+    option.setAttribute('name', option.value);
+    option.text = option.value + ' = ' + startTime + ' - ' + endTime;
 
-    if (columnIndex >= 0) {
-        // Calculate rowIndex based on selectedDate
-        var rowIndex = (parseInt(selectedDate.substring(0, 2), 10))*3 + 1;
-
-        // Write data to the spreadsheet
-        sheet.getRange(rowIndex, columnIndex + 7).setValue(text); // Write text to the found column
-        sheet.getRange(rowIndex + 1, columnIndex + 7).setValue(Category); // Write Category to the next row
-        sheet.getRange(rowIndex + 2, columnIndex + 7).setValue(ScreenTime); // Write ScreenTime to the next row
-
-        // Return success message
-        return ContentService.createTextOutput(JSON.stringify({ result: 'Success', column: columnIndex + 7, row:rowIndex, slot: number, Date: selectedDate })).setMimeType(ContentService.MimeType.JSON);
-    } else {
-        // Return error message if column not found
-        return ContentService.createTextOutput(JSON.stringify({ result: 'Error', message: 'Column not found for number ' + number })).setMimeType(ContentService.MimeType.JSON);
+    // Set default selected option based on the current time
+    let CurrentSlot = getTimeSlot();
+    if (i === CurrentSlot) {
+      option.selected = true;
     }
+
+    timeslotDropdown.add(option);
+
+    // Update starting time for the next slot
+    startTime = endTime;
+  }
+}
+
+// Function to format time in HH:mm AM/PM format
+function formatTime(hours, minutes) {
+  const period = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  return hours + ':' + (minutes < 10 ? '0' : '') + minutes + ' ' + period;
+}
+
+// Call the function to populate the dropdown
+populateTimeSlots();
+
+// Function to get the current time slot based on current time
+function getTimeSlot() {
+  // Get the current time
+  let currentTime = new Date();
+  let currentHours = currentTime.getHours();
+  let currentMinutes = currentTime.getMinutes();
+  let currentSlot = 37 - Math.floor((currentHours - 5) * 2 + currentMinutes / 30);
+
+  return currentSlot;
+}
+
+// Function to fetch data from Google Sheets and display immediately on page load
+window.addEventListener('load', async function () {
+  const timeslot = timeslotDropdown.value;
+  await fetchSheetData(timeslot);
+});
+
+// Function to fetch data from Google Sheets and display on selection change
+timeslotDropdown.addEventListener('change', async function () {
+  const timeslot = timeslotDropdown.value;
+  await fetchSheetData(timeslot);
+});
+
+// Function to fetch data from Google Sheets
+async function fetchSheetData(number) {
+  const scriptUrl = scriptURL + '?number=' + encodeURIComponent(number);
+
+  try {
+    const response = await fetch(scriptUrl);
+    const result = await response.json();
+
+    if (result.found) {
+      RoutineResponse.innerHTML = `You Should be doing: ${result.value}`;
+    } else {
+      RoutineResponse.innerHTML = 'Number not found';
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    RoutineResponse.innerHTML = `Error: ${error.message}`;
+  }
 }
