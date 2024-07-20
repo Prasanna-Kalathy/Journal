@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbyfnLm9Yk6elFloyZMY1DV6fpItB8utK13PnT_zJYUV9zBAFXISPUMnSx_ITh2M_eE/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycby0tX-0Gx1Cghlr08QZPFf9spzPqA4dr46hIqbsEhQFrWphVBI0-NL3mnbv7NXSVd8/exec';
 const form = document.forms['submit-to-google-sheet'];
 const RoutineResponse = document.getElementById('RoutineResponse');
 const timeslotDropdown = document.getElementById('timeslot'); // Cache the timeslot dropdown element
@@ -43,7 +43,7 @@ document.getElementById("Form_Submit").addEventListener("submit", function (e) {
     .then(response => response.json())
     .then(data => {
       // Show success popup message
-      showPopup(`Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}, Date: ${data.Date}`, true);
+      showPopup(`Message: ${data.result}, Column: ${data.column}, Row: ${data.row}, Slot: ${data.slot}`, true);
       // Clear the form after successful submission
       form.reset();
     })
@@ -123,8 +123,10 @@ async function fetchSheetData(number) {
     const result = await response.json();
 
     if (result.found) {
-      RoutineResponse.innerHTML = `You Should be doing : <br/><span class="highlight">${result.value}</span>`;
-      document.getElementById('textbox').value = result.value;
+      RoutineResponse.innerHTML = `You Should be doing : <br/><span class="highlight">${result.tasks}</span>`;
+      document.getElementById('textbox').value = result.entry;
+      document.getElementById('Category').value = result.taskType;
+      document.getElementById(result.screenVal).checked = true;
     } else {
       RoutineResponse.innerHTML = 'Number not found';
     }
