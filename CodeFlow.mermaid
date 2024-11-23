@@ -1,0 +1,64 @@
+graph TD
+    subgraph Frontend
+        A[Page Load] --> B[Initialize Form]
+        B --> C[Populate Time Slots]
+        B --> D[Set Default Date]
+        C --> E[Get Current Time Slot]
+        E --> F[Select Default Time Slot]
+        F --> G[Fetch Initial Routine Data]
+        
+        subgraph Form Interactions
+            H[Time Slot Change] --> I[Fetch Routine Data]
+            J[Form Submit] --> K[Format Date]
+            K --> L[Collect Form Data]
+            L --> M[POST Request]
+        end
+        
+        subgraph UI Updates
+            N[Show Loading Spinner]
+            O[Hide Loading Spinner]
+            P[Show Popup Message]
+            Q[Update Routine Display]
+            R[Reset Form]
+        end
+    end
+
+    subgraph Backend Google Apps Script
+        subgraph GET Request Handler
+            S[doGet Function] --> T[Find Routine by Slot]
+            T --> U{Routine Found?}
+            U -->|Yes| V[Return Routine Data]
+            U -->|No| W[Return Not Found]
+        end
+
+        subgraph POST Request Handler
+            X[doPost Function] --> Y[Parse Parameters]
+            Y --> Z[Find Column Index]
+            Z --> AA{Column Found?}
+            AA -->|Yes| AB[Calculate Row Index]
+            AB --> AC[Write Data to Sheet]
+            AC --> AD[Return Success]
+            AA -->|No| AE[Return Error]
+        end
+    end
+
+    subgraph Data Flow
+        G --> N
+        G --> S
+        V --> O
+        V --> Q
+        W --> O
+        W --> Q
+        
+        M --> X
+        AD --> P
+        AD --> R
+        AE --> P
+        
+        I --> N
+        I --> S
+    end
+
+    style Frontend fill:#1e1e1e,stroke:#6200ea,color:#fff
+    style Backend fill:#121212,stroke:#34a853,color:#fff
+    style Data flow:#fff351
