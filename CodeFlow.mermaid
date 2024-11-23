@@ -1,17 +1,17 @@
 graph TD
     subgraph Frontend
-        A[Page Load] --> B[Initialize Form]
-        B --> C[Populate Time Slots]
-        B --> D[Set Default Date]
-        C --> E[Get Current Time Slot]
-        E --> F[Select Default Time Slot]
-        F --> G[Fetch Initial Routine Data]
+        A[Page Load] -->|Initialization| B[Initialize Form]
+        B -->|Setup| C[Populate Time Slots]
+        B -->|Setup| D[Set Default Date]
+        C -->|Time| E[Get Current Time Slot]
+        E -->|Time| F[Select Default Time Slot]
+        F -->|Initial Load| G[Fetch Initial Routine Data]
         
         subgraph Form Interactions
-            H[Time Slot Change] --> I[Fetch Routine Data]
-            J[Form Submit] --> K[Format Date]
-            K --> L[Collect Form Data]
-            L --> M[POST Request]
+            H[Time Slot Change] -->|User Action| I[Fetch Routine Data]
+            J[Form Submit] -->|Process| K[Format Date]
+            K -->|Process| L[Collect Form Data]
+            L -->|Submit| M[POST Request]
         end
         
         subgraph UI Updates
@@ -25,40 +25,59 @@ graph TD
 
     subgraph Backend Google Apps Script
         subgraph GET Request Handler
-            S[doGet Function] --> T[Find Routine by Slot]
-            T --> U{Routine Found?}
+            S[doGet Function] -->|Search| T[Find Routine by Slot]
+            T -->|Check| U{Routine Found?}
             U -->|Yes| V[Return Routine Data]
             U -->|No| W[Return Not Found]
         end
 
         subgraph POST Request Handler
-            X[doPost Function] --> Y[Parse Parameters]
-            Y --> Z[Find Column Index]
-            Z --> AA{Column Found?}
+            X[doPost Function] -->|Parse| Y[Parse Parameters]
+            Y -->|Find| Z[Find Column Index]
+            Z -->|Check| AA{Column Found?}
             AA -->|Yes| AB[Calculate Row Index]
-            AB --> AC[Write Data to Sheet]
-            AC --> AD[Return Success]
+            AB -->|Write| AC[Write Data to Sheet]
+            AC -->|Return| AD[Return Success]
             AA -->|No| AE[Return Error]
         end
     end
 
     subgraph Data Flow
-        G --> N
-        G --> S
-        V --> O
-        V --> Q
-        W --> O
-        W --> Q
+        G -->|Loading| N
+        G -->|Request| S
+        V -->|Update| O
+        V -->|Display| Q
+        W -->|Update| O
+        W -->|Display| Q
         
-        M --> X
-        AD --> P
-        AD --> R
-        AE --> P
+        M -->|Submit| X
+        AD -->|Success| P
+        AD -->|Reset| R
+        AE -->|Error| P
         
-        I --> N
-        I --> S
+        I -->|Loading| N
+        I -->|Request| S
     end
 
-    style Frontend fill:#1e1e1e,stroke:#6200ea,color:#fff
-    style Backend fill:#121212,stroke:#34a853,color:#fff
-    style Data flow:#fff351
+    classDef default fill:#1e1e1e,stroke:#ffffff,color:#fff
+    classDef frontend fill:#1e1e1e,stroke:#6200ea,color:#fff
+    classDef backend fill:#121212,stroke:#34a853,color:#fff
+    
+    linkStyle 0 stroke:#FF69B4,stroke-width:2
+    linkStyle 1,2 stroke:#4169E1,stroke-width:2
+    linkStyle 3,4 stroke:#FFD700,stroke-width:2
+    linkStyle 5 stroke:#DA70D6,stroke-width:2
+    linkStyle 6 stroke:#FF4500,stroke-width:2
+    linkStyle 7,8 stroke:#32CD32,stroke-width:2
+    linkStyle 9 stroke:#FF8C00,stroke-width:2
+    linkStyle 10,11 stroke:#9370DB,stroke-width:2
+    linkStyle 12 stroke:#20B2AA,stroke-width:2
+    linkStyle 13 stroke:#DC143C,stroke-width:2
+    linkStyle 14,15 stroke:#DDA0DD,stroke-width:2
+    linkStyle 16 stroke:#9ACD32,stroke-width:2
+    linkStyle 17,18 stroke:#00CED1,stroke-width:2
+    linkStyle 19,20 stroke:#FF69B4,stroke-width:2
+    linkStyle 21,22,23,24 stroke:#4682B4,stroke-width:2
+    linkStyle 25 stroke:#FFA07A,stroke-width:2
+    linkStyle 26,27,28 stroke:#8B008B,stroke-width:2
+    linkStyle 29,30 stroke:#FF1493,stroke-width:2
