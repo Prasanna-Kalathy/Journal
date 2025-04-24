@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzNffjWkSzftbSauJX6tNtFCj50ipYVsrfVBQftQXn6YRnObouiFgaPbbXlnbJMmdgL/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbwQNvzdRDHnqv0jdfE4jzEp5ClXBqVy__up8Tlzo-Lh8bQSnM1bk0-uik1U1TqKbP2j/exec';
 const form = document.forms['submit-to-google-sheet'];
 const RoutineResponse = document.getElementById('RoutineResponse');
 const timeslotDropdown = document.getElementById('timeslot'); // Cache the timeslot dropdown element
